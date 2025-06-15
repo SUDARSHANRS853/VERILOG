@@ -200,3 +200,131 @@ simtime=60,d=0101,i=10
 simtime=70,d=0010,i=01
 simtime=80,d=0001,i=00
 ```
+# 4. priority Encoder
+```
+module priority_encoder_8to3(d,i,valid);
+  input [3:0]d;
+  output reg[1:0]i;
+  output reg valid;
+  always@(d)begin
+    valid=1'b1;
+    casex(d)
+      
+      4'b0000:i=2'b00;
+      4'b001x:i=2'b01;
+      4'b01xx:i=2'b10;
+      4'b1xxx:i=2'b11;
+  default:begin 
+    i=2'b00;
+    valid=1'b0;
+  end
+    
+
+    endcase
+  end
+endmodule
+
+//Test bench
+module pe42d_test;
+  reg [3:0]d;
+  wire [1:0]i;
+
+  
+  priority_encoder_8to3 dut(d,i,valid);
+  initial begin 
+    repeat(10)begin
+      {d}=$random;
+      #10;
+//     d=7'b00000000;
+//     #5 d=8'b00000001;
+//     #5 d=8'b00000011;
+//     #5 d=8'b00000100;
+//     #5 d=8'b00001010;
+//     #5 d=8'b00010100;
+//     #5 d=8'b00100000;
+//     #5 d=8'b01010100;
+//     #5 d=8'b10010100;
+    
+//     d=4'b0000;
+//     #5 d=4'b0010;
+//     #5 d=4'b0100;
+//     #5 d=4'b1000;
+//     #5 d=4'b0011;   
+  end 
+  end
+  
+    initial begin
+      $monitor("simtime=%0t,d=%b,i=%b",$time,d,i);
+    end
+    initial begin
+      $dumpfile("dump.vcd");
+      $dumpvars(0, pe42d_test);
+    end
+  endmodule
+```
+Output
+```
+simtime=0,d=0100,i=10
+simtime=10,d=0001,i=00
+simtime=20,d=1001,i=11
+simtime=30,d=0011,i=01
+simtime=40,d=1101,i=11
+simtime=60,d=0101,i=10
+simtime=70,d=0010,i=01
+simtime=80,d=0001,i=00
+simtime=90,d=1101,i=11
+```
+## 5. Maximum value of three numbers using function
+module max_val (
+    input signed [31:0] a, b, c,
+    output integer max_val
+);
+
+    // Function declaration inside the module
+    function integer maximum;
+        input signed [31:0] a, b, c;
+        begin
+            if (a > b && a > c)
+                maximum = a;
+            else if (b > c)
+                maximum = b;
+            else
+                maximum = c;
+        end
+    endfunction
+
+    // Use the function to assign output
+    assign max_val = maximum(a, b, c);
+
+endmodule
+
+//testbench
+module tb_max_val;
+
+    // Declare testbench variables
+    reg signed [31:0] a, b, c;
+    wire integer max_val;
+
+    // Instantiate the module under test
+    max_val uut (
+        .a(a),
+        .b(b),
+        .c(c),
+        .max_val(max_val)
+    );
+
+    initial begin
+        // Monitor outputs
+      $monitor("Time=%0t | \ta=%0d,\t b=%0d,\t c=%0d => \tmax_val=%0d", $time, a, b, c, max_val);
+
+        // Test cases
+        a = 10; b = 20; c = 30; #5;
+        a = -5; b = 15; c = 0;  #5;
+        a = -20; b = -10; c = -30; #5;
+        a = 50; b = 50; c = 10; #5;
+        a = 100; b = 200; c = 150; #5;
+
+        $finish;
+    end
+
+endmodule
