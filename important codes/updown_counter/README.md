@@ -1,4 +1,4 @@
-# 3 bit UPDOWN COUNTER
+## 3 bit UPDOWN COUNTER
 0 1 2 3 4 5 6 7 7 6 5 4 3 2 1 0
 ```
 module counter(clk,rst,up_down,count);
@@ -66,7 +66,7 @@ simtime=135,rst=0,up_down=0,count=2
 simtime=145,rst=0,up_down=0,count=1
 simtime=155,rst=0,up_down=0,count=0
 ```
-# 3bit updown counter
+## 3bit updown counter
 0 1 2 3 4 5 6 7 6 5 4 3 2 1 0
 ```
 module counter (
@@ -134,7 +134,7 @@ Time=135 | rst=0 | up_down=0 | count=1
 Time=145 | rst=0 | up_down=0 | count=0
 Time=155 | rst=0 | up_down=0 | count=7
 ```
-# 3. Priority encoder
+## 3. Priority encoder
 ```
 // Code your testbench here
 // or browse Examples
