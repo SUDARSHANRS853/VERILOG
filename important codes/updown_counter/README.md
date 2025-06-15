@@ -134,3 +134,69 @@ Time=135 | rst=0 | up_down=0 | count=1
 Time=145 | rst=0 | up_down=0 | count=0
 Time=155 | rst=0 | up_down=0 | count=7
 ```
+# 3. Priority encoder
+```
+// Code your testbench here
+// or browse Examples
+module priority_encoder_8to3(d,i,valid);
+  input [3:0]d;
+  output reg[1:0]i;
+  output reg valid;
+  always@(d)begin
+    valid=1'b1;
+    casex(d)
+      
+      4'b0000:i=2'b00;
+      4'b001x:i=2'b01;
+      4'b01xx:i=2'b10;
+      4'b1xxx:i=2'b11;
+  default:begin 
+    i=2'b00;
+    valid=1'b0;
+  end
+    
+
+    endcase
+  end
+endmodule
+
+//Test bench
+module pe42d_test;
+  reg [3:0]d;
+  wire [1:0]i;
+
+  
+  priority_encoder_8to3 dut(d,i,valid);
+  initial begin 
+    repeat(10)begin
+      {d}=$random;
+      #10;
+    
+//     d=4'b0000;
+//     #5 d=4'b0010;
+//     #5 d=4'b0100;
+//     #5 d=4'b1000;
+//     #5 d=4'b0011;   
+  end 
+  end
+  
+    initial begin
+      $monitor("simtime=%0t,d=%b,i=%b",$time,d,i);
+    end
+    initial begin
+      $dumpfile("dump.vcd");
+      $dumpvars(0, pe42d_test);
+    end
+  endmodule
+```
+Output
+```
+simtime=0,d=0100,i=10
+simtime=10,d=0001,i=00
+simtime=20,d=1001,i=11
+simtime=30,d=0011,i=01
+simtime=40,d=1101,i=11
+simtime=60,d=0101,i=10
+simtime=70,d=0010,i=01
+simtime=80,d=0001,i=00
+```
