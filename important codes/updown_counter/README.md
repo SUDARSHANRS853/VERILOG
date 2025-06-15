@@ -468,3 +468,71 @@ Time	Input	Palindrome?
 40	         0	1
 50	 123456789	0
 ```
+## 9. priority Encoder using if else block
+```
+module priority_encoder_4to2 (
+  input [3:0] d,
+  output reg [1:0] i
+  
+);
+  always @(*) begin
+    if (d == 4'b0000) begin
+      i = 2'b00;
+     
+    end else if (d[3]) begin
+      i = 2'b11;
+      
+    end else if (d[2]) begin
+      i = 2'b10;
+      
+    end else if (d[1]) begin
+      i = 2'b01;
+    end else begin // d[0] is set
+      i = 2'b00;
+      
+    end
+  end
+endmodule
+module pe42d_test;
+  reg [3:0] d;
+  wire [1:0] i;
+ 
+
+  priority_encoder_4to2 dut(d, i );
+
+  initial begin 
+    // Apply random inputs
+    repeat(10) begin
+      d = $random;
+      #10;
+    end
+    
+    // Also test edge cases explicitly
+    d = 4'b0000; #10;
+    d = 4'b0001; #10;
+    d = 4'b0010; #10;
+    d = 4'b0100; #10;
+    d = 4'b1000; #10;
+    d = 4'b1010; #10;
+    d = 4'b1111; #10;
+    $stop;
+  end
+
+  initial begin
+    $monitor("Time=%0t | d=%b | i=%b ", $time, d, i);
+  end
+
+  initial begin
+    $dumpfile("dump.vcd");
+    $dumpvars(0, pe42d_test);
+  end
+endmodule
+```
+Output
+```
+Time=0 | d=0100 | i=10 
+Time=10 | d=0001 | i=00 
+Time=20 | d=1001 | i=11 
+Time=30 | d=0011 | i=01 
+Time=40 | d=1101 | i=11
+```
