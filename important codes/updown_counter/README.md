@@ -200,7 +200,7 @@ simtime=60,d=0101,i=10
 simtime=70,d=0010,i=01
 simtime=80,d=0001,i=00
 ```
-## 5. Maximum value of three numbers using function
+## 4. Maximum value of three numbers using function
 ```
 module max_val (
     input signed [31:0] a, b, c,
@@ -263,4 +263,52 @@ Time=5 | 	a=-5,	 b=15,	 c=0 => 	max_val=15
 Time=10 | 	a=-20,	 b=-10,	 c=-30 => 	max_val=-10
 Time=15 | 	a=50,	 b=50,	 c=10 => 	max_val=50
 Time=20 | 	a=100,	 b=200,	 c=150 => 	max_val=200
+```
+## 5. Parity Checker
+```
+module parity_gen(input [7:0] din, output dout);
+
+    // Function to compute parity (odd parity)
+    function parity(input [7:0] din);
+        integer i;
+        reg temp;
+        begin
+            temp = 0;
+            for (i = 0; i <= 7; i = i + 1)
+                temp = temp ^ din[i]; // XOR reduction
+            parity = temp;
+        end
+    endfunction
+
+    assign dout = parity(din); // Use the function to assign parity output
+
+endmodule
+
+//testbench
+module tb;
+    reg [7:0] din;
+    wire dout;
+
+    // Instantiate the DUT (Device Under Test)
+    parity_gen dut(din, dout);
+
+    initial begin
+        repeat (5) begin
+            din = $random;
+            #2;
+        end
+    end
+
+    initial begin
+        $monitor("Din = %b, Parity = %b", din, dout);
+    end
+endmodule
+```
+Output
+```
+Din = 00100100, Parity = 0
+Din = 10000001, Parity = 0
+Din = 00001001, Parity = 0
+Din = 01100011, Parity = 0
+Din = 00001101, Parity = 1
 ```
