@@ -312,3 +312,74 @@ Din = 00001001, Parity = 0
 Din = 01100011, Parity = 0
 Din = 00001101, Parity = 1
 ```
+## 6. Fibonacci series
+```module fibonacci;
+
+    integer ft = 0; // First term
+    integer st = 1; // Second term
+    integer nt;     // Next term
+    integer n_t = 10; // Number of terms to generate
+
+    // Fibonacci function
+    function void fib(input [31:0] n);
+        integer i;
+        begin
+            $write("%0d\t", ft);
+            $write("%0d\t", st);
+            for (i = 3; i <= n; i = i + 1) begin
+                nt = ft + st;
+                ft = st;
+                st = nt;
+                $write("%0d\t", nt);
+            end
+        end
+    endfunction
+
+    // Invoke the function
+    initial begin
+        $display("Fibonacci sequence:");
+        fib(n_t);
+        $display(); // for newline
+    end
+
+endmodule
+```
+Output
+```
+ 0          1          1          2          3          5          8         13         21         34
+```
+## 7.Prime number detection
+```
+module prime_det;
+  integer n=21;
+   reg prime;
+  
+  function prime_detect;
+    input [31:0]a;
+    integer i;
+    begin
+      if(a==0||a==1)
+      prime_detect=0;
+    else begin
+      prime_detect=1;
+      for(i=2;i<=a/2;i=i+1)
+        if(a%i==0)begin
+          prime_detect=0;
+      break;
+      end
+    end
+    end
+  endfunction
+  initial begin
+    prime=prime_detect(n);
+    if(prime)
+      $display("%d is the prime number",n);
+    else 
+      $display("%d is not prime number",n);
+  end
+endmodule
+```
+Output
+```
+21 is not prime number
+```
