@@ -200,81 +200,8 @@ simtime=60,d=0101,i=10
 simtime=70,d=0010,i=01
 simtime=80,d=0001,i=00
 ```
-# 4. priority Encoder
-```
-module priority_encoder_8to3(d,i,valid);
-  input [3:0]d;
-  output reg[1:0]i;
-  output reg valid;
-  always@(d)begin
-    valid=1'b1;
-    casex(d)
-      
-      4'b0000:i=2'b00;
-      4'b001x:i=2'b01;
-      4'b01xx:i=2'b10;
-      4'b1xxx:i=2'b11;
-  default:begin 
-    i=2'b00;
-    valid=1'b0;
-  end
-    
-
-    endcase
-  end
-endmodule
-
-//Test bench
-module pe42d_test;
-  reg [3:0]d;
-  wire [1:0]i;
-
-  
-  priority_encoder_8to3 dut(d,i,valid);
-  initial begin 
-    repeat(10)begin
-      {d}=$random;
-      #10;
-//     d=7'b00000000;
-//     #5 d=8'b00000001;
-//     #5 d=8'b00000011;
-//     #5 d=8'b00000100;
-//     #5 d=8'b00001010;
-//     #5 d=8'b00010100;
-//     #5 d=8'b00100000;
-//     #5 d=8'b01010100;
-//     #5 d=8'b10010100;
-    
-//     d=4'b0000;
-//     #5 d=4'b0010;
-//     #5 d=4'b0100;
-//     #5 d=4'b1000;
-//     #5 d=4'b0011;   
-  end 
-  end
-  
-    initial begin
-      $monitor("simtime=%0t,d=%b,i=%b",$time,d,i);
-    end
-    initial begin
-      $dumpfile("dump.vcd");
-      $dumpvars(0, pe42d_test);
-    end
-  endmodule
-```
-Output
-```
-simtime=0,d=0100,i=10
-simtime=10,d=0001,i=00
-simtime=20,d=1001,i=11
-simtime=30,d=0011,i=01
-simtime=40,d=1101,i=11
-simtime=60,d=0101,i=10
-simtime=70,d=0010,i=01
-simtime=80,d=0001,i=00
-simtime=90,d=1101,i=11
-```
 ## 5. Maximum value of three numbers using function
+```
 module max_val (
     input signed [31:0] a, b, c,
     output integer max_val
@@ -328,3 +255,12 @@ module tb_max_val;
     end
 
 endmodule
+```
+0utput
+```
+Time=0 | 	a=10,	 b=20,	 c=30 => 	max_val=30
+Time=5 | 	a=-5,	 b=15,	 c=0 => 	max_val=15
+Time=10 | 	a=-20,	 b=-10,	 c=-30 => 	max_val=-10
+Time=15 | 	a=50,	 b=50,	 c=10 => 	max_val=50
+Time=20 | 	a=100,	 b=200,	 c=150 => 	max_val=200
+```
