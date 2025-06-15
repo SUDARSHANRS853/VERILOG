@@ -383,3 +383,88 @@ Output
 ```
 21 is not prime number
 ```
+## 8. palindrome number
+```
+module palindrome(input [31:0] a, output reg p);
+  reg [31:0] org_num;
+
+  // Palindrome detection function
+  function automatic bit pal(input [31:0] n);
+    integer rem;
+    integer rev_num = 0;
+    begin
+      while (n != 0) begin
+        rem = n % 10;
+        rev_num = rev_num * 10 + rem;
+        n = n / 10;
+      end
+
+      if (rev_num == a)
+        pal = 1; // number is palindrome
+      else
+        pal = 0; // number is not palindrome
+    end
+  endfunction
+
+  // Use always block to update output
+  always @(*) begin
+    org_num = a;
+    p = pal(org_num);
+  end
+endmodule
+
+
+    module palindrome_tb;
+  reg [31:0] a;       // This will be the input number we test
+  wire p;             // This will show if the number is a palindrome or not
+
+  // Connect testbench signals to the palindrome module
+  palindrome uut (
+    .a(a),
+    .p(p)
+  );
+
+  initial begin
+    // Show what's happening
+    $display("Time\tInput\tPalindrome?");
+    $monitor("%0t\t%d\t%b", $time, a, p);
+
+    // Test Case 1: Palindrome number
+    a = 121;  // 121 is a palindrome
+    #10;
+
+    // Test Case 2: Not a palindrome
+    a = 123;  // 123 is not a palindrome
+    #10;
+
+    // Test Case 3: Another palindrome
+    a = 1221; // 1221 is a palindrome
+    #10;
+
+    // Test Case 4: Single-digit (always palindrome)
+    a = 7;    // 7 is a palindrome
+    #10;
+
+    // Test Case 5: Zero (edge case, considered palindrome)
+    a = 0;    
+    #10;
+
+    // Test Case 6: Large number not a palindrome
+    a = 123456789;
+    #10;
+
+    // End simulation
+    $finish;
+  end
+endmodule
+```
+Output
+```
+Time	Input	Palindrome?
+0	       121	1
+10	       123	0
+20	      1221	1
+30	         7	1
+40	         0	1
+50	 123456789	0
+```
