@@ -1,4 +1,4 @@
-# questions
+# Questions
   ## 1.3bit updown 0 1 2 3 4 5 6 7 7 6 5 4 3 2 1 0
   ## 2.3bit updown 0 1 2 3 4 5 6 7 7 6 5 4 3 2 1 0
   ## 3.Priority encoder
@@ -12,6 +12,8 @@
   ## 11. MUX 4*1 using 2*1
   ## 12. 3*8 decoder using 2*4 decoder
   ## 13. 3*1 mux using turnary operator
+
+
   
 ## 1. 3 bit UPDOWN COUNTER
 0 1 2 3 4 5 6 7 7 6 5 4 3 2 1 0
