@@ -12,6 +12,13 @@
   ## 11. MUX 4*1 using 2*1
   ## 12. 3*8 decoder using 2*4 decoder
   ## 13. 3*1 mux using turnary operator
+  ## 14. 4*1 mux using turnary
+  ## 15. 5*1 mux using turnary operator
+  ## 16. Fulladder using ha adder
+  ## 17. 3bit even and odd detector using dataflow modelling
+  ## 18.4bit adder using full adder structural modelling
+  ## 19. Generate a clock for 200 mhz frequency.
+  ## 20. Generate 2 clock each of 10ns time period and 50 percent duty.Clk2 is delayed version of clock 1 by 5 ns.
   ##
   ##
   ##
@@ -756,7 +763,7 @@ simtime=4,i=010,s=01,y=0
 simtime=6,i=101,s=10,y=1
 simtime=8,i=100,s=11,y=x
 ```
-## 4*1 mux using turnary
+## 14. 4*1 mux using turnary
 ```
 module mux41(i,s,y);
   input [3:0]i;
@@ -798,7 +805,7 @@ simtime=4,i=0010,s=01,y=0
 simtime=6,i=0101,s=10,y=1
 simtime=8,i=1100,s=11,y=1
 ```
-## 5*1 mux using turnary operator
+## 15. 5*1 mux using turnary operator
 ```
 module mux41(i,s,y);
   input [4:0]i;
@@ -850,7 +857,7 @@ simtime=14,i=11001,s=110,y=x
 simtime=16,i=00101,s=010,y=1
 simtime=18,i=00101,s=111,y=x
 ```
-## Fulladder using ha adder
+## 16. Fulladder using ha adder
 ```
 module ha(a,b,sum,cout);
 input a,b;
@@ -902,7 +909,7 @@ simtime=25, a=1, b=0, cin=1, sum=0, cout=1
 simtime=30, a=1, b=1, cin=0, sum=0, cout=1
 simtime=35, a=1, b=1, cin=1, sum=1, cout=1
 ```
-## 3bit even and odd detector using dataflow modelling
+## 17. 3bit even and odd detector using dataflow modelling
 ```
 module EOD(a,b,c,e,o);
   input a,b,c;
@@ -949,7 +956,7 @@ sim time = 25,a=1,b=0,c=1,e=0,o=1
 sim time = 30,a=1,b=1,c=0,e=1,o=0
 sim time = 35,a=1,b=1,c=1,e=0,o=1
 ```
-## Fulladder using ha structural modelling
+## 18.4bit adder using full adder structural modelling
 ```
 module fulladder(a,b,cin,s,co);
   input[3:0]a,b;
@@ -1009,4 +1016,54 @@ sim time = 12, a=0101,b=0111,c=0,Sum=1100,carry out=0
 sim time = 14, a=1111,b=0010,c=0,Sum=0001,carry out=1
 sim time = 16, a=1000,b=0101,c=0,Sum=1101,carry out=0
 sim time = 18, a=1101,b=1101,c=1,Sum=1011,carry out=1
+```
+## 19. Generate a clock for 200 mhz frequency.
+```
+module test;
+  reg clk1;
+  reg clk2;
+  real freq = 50; // (in MHz)
+  real time_period, ton; // (In ns)
+  real duty = 50; // (in percentage)
+  initial begin
+    clk1 = 0;
+    clk2 = 0;
+    time_period = (1000 / freq); // 10ns
+    ton = (time_period * duty) / 100; // 5ns
+    #1000 $finish;
+  end
+  always begin
+    #(time_period - ton) clk1 = 1;
+    #ton clk1 = 0;
+  end
+  always @(posedge clk1) begin
+    #5 clk2 = 1;   // Delay 5ns after clk1 rises
+    #5 clk2 = 0; 
+  end
+ endmodule
+```
+## 20. Generate 2 clock each of 10ns time period and 50 percent duty.Clk2 is delayed version of clock 1 by 5 ns.
+```
+module test;
+  reg clk1;
+  reg clk2;
+  real freq = 50; // (in MHz)
+  real time_period, ton; // (In ns)
+  real duty = 50; // (in percentage)
+  initial begin
+    clk1 = 0;
+    clk2 = 0;
+    time_period = (1000 / freq); // 10ns
+    ton = (time_period * duty) / 100; // 5ns
+    #1000 $finish;
+  end
+  always begin
+    #(time_period - ton) clk1 = 1;
+    #ton clk1 = 0;
+  end
+  always @(posedge clk1) begin
+    #5 clk2 = 1;   // Delay 5ns after clk1 rises
+    #5 clk2 = 0; 
+  end
+ endmodule
 ```
