@@ -884,5 +884,111 @@ simtime=25, a=1, b=0, cin=1, sum=0, cout=1
 simtime=30, a=1, b=1, cin=0, sum=0, cout=1
 simtime=35, a=1, b=1, cin=1, sum=1, cout=1
 ```
-
-
+## 3bit even and odd detector using dataflow modelling
+```
+module EOD(a,b,c,e,o);
+  input a,b,c;
+  output e,o;
+  assign e=(~c);
+  assign o=c;
+  
+ endmodule
+module EOD_TB;
+  reg a,b,c;
+  wire e,o;
+  
+  EOD e1(a,b,c,e,o);
+  
+  initial begin
+    a=1'b0; b= 1'b0 ; c= 1'b0;
+    #5 a=1'b0; b= 1'b0 ; c= 1'b1;
+    #5 a=1'b0; b= 1'b1 ; c= 1'b0;
+    #5 a=1'b0; b= 1'b1 ; c= 1'b1;
+    #5 a=1'b1; b= 1'b0 ; c= 1'b0;
+    #5 a=1'b1; b= 1'b0 ; c= 1'b1;
+    #5 a=1'b1; b= 1'b1 ; c= 1'b0;
+    #5 a=1'b1; b= 1'b1 ; c= 1'b1;
+    #5;
+  end
+  
+  initial begin
+    $monitor("sim time = %0t,a=%b,b=%b,c=%b,e=%b,o=%b",$time,a,b,c,e,o);
+  end
+  initial begin
+    $dumpfile("dump.vcd");
+    $dumpvars(0, a, b, c,e,o);
+   end
+ endmodule
+```
+Output
+```
+sim time = 0,a=0,b=0,c=0,e=1,o=0
+sim time = 5,a=0,b=0,c=1,e=0,o=1
+sim time = 10,a=0,b=1,c=0,e=1,o=0
+sim time = 15,a=0,b=1,c=1,e=0,o=1
+sim time = 20,a=1,b=0,c=0,e=1,o=0
+sim time = 25,a=1,b=0,c=1,e=0,o=1
+sim time = 30,a=1,b=1,c=0,e=1,o=0
+sim time = 35,a=1,b=1,c=1,e=0,o=1
+```
+## Fulladder using ha structural modelling
+```
+module fulladder(a,b,cin,s,co);
+  input[3:0]a,b;
+  input cin;
+  output co;
+  output [3:0]s;
+  assign s=a^b^cin;
+  assign co=(a&b)|(b&cin)|(a&cin);
+endmodule
+module bit4adder ( a,b,cin,s,co);
+  input [3:0] a,b; input cin;
+  output [3:0]s;
+  output co;
+  wire w1,w2,w3;
+  fulladder f1 (a[0],b[0],cin,s[0],w1);
+  fulladder f2 (a[1],b[1],w1,s[1],w2);
+  fulladder f3 (a[2],b[2],w2,s[2],w3);
+  fulladder f4 (a[3],b[3],w3,s[3],co);
+ endmodule
+module bit4adder_TB;
+  reg [3:0]a,b;
+  wire [3:0]s;
+  reg cin;
+  wire co;
+  
+  bit4adder F1(a,b,cin,s,co);
+  initial begin
+    repeat(10)
+      begin
+        a=$random;
+        b=$random;
+        cin=$random;
+        
+        #2;
+      end
+//     for (integer i=0; i<2**9; i=i+1)
+//       begin
+//         {a,b,c} = i; 
+//         #5;{a,b,c} = i;
+//       end
+  end
+  initial begin
+    $monitor("sim time = %0t, a=%b,b=%b,c=%b,Sum=%b,carry out=%b", 
+$time,a,b,cin,s,co);
+  end
+ endmodule
+```
+Output
+```
+sim time = 0, a=0100,b=0001,c=1,Sum=0110,carry out=0
+sim time = 2, a=0011,b=1101,c=1,Sum=0001,carry out=1
+sim time = 4, a=0101,b=0010,c=1,Sum=1000,carry out=0
+sim time = 6, a=1101,b=0110,c=1,Sum=0100,carry out=1
+sim time = 8, a=1101,b=1100,c=1,Sum=1010,carry out=1
+sim time = 10, a=0110,b=0101,c=0,Sum=1011,carry out=0
+sim time = 12, a=0101,b=0111,c=0,Sum=1100,carry out=0
+sim time = 14, a=1111,b=0010,c=0,Sum=0001,carry out=1
+sim time = 16, a=1000,b=0101,c=0,Sum=1101,carry out=0
+sim time = 18, a=1101,b=1101,c=1,Sum=1011,carry out=1
+```
