@@ -626,4 +626,263 @@ Time | sel  |inputs| y
   30 | 10   | 1010 | 0
   40 | 11   | 1010 | 1
 ```
+## 3*8 decoder using 2*4 decoder
+```
+module decoder12(a,d);
+  input a;
+  output [1:0]d;
+  assign d[0]=~a;
+  assign d[1]=a;
+endmodule
+
+module decoder24(a,en,d);
+  input [1:0]a;
+  input en;
+  output [3:0]d;
+  assign d[0]= (~a[0])&(~a[1])&en;
+  assign d[1]= (a[0])&(~a[1])&en;
+  assign d[2]= (~a[0])&(a[1])&en;
+  assign d[3]= (a[0])&(a[1])&en;
+endmodule
+module decoder(a,en,d);
+  input [2:0]a;
+  output [7:0]d;
+  input en;
+  wire [1:0]w;
+  decoder12 b1(a[2],w);
+  decoder24 b(a[1:0],w[0]&en,d[3:0]);
+  decoder24 c(a[1:0],w[1]&en,d[7:4]);
+endmodule
+
+module decoder_test;
+  reg [2:0] a;
+  reg en;
+  wire [7:0] d;
+
+  // Instantiate the decoder module under test (DUT)
+  decoder dut (.a(a), .en(en), .d(d));
+
+  initial begin
+    en = 1;
+    a = 3'b000;
+    #5 a = 3'b001;
+    #5 a = 3'b010;
+    #5 a = 3'b011;
+    #5 a = 3'b100;
+    #5 a = 3'b101;
+    #5 a = 3'b110;
+    #5 a = 3'b111;
+    #5 $finish;
+  end
+
+  initial begin
+    $monitor("simtime=%0t, a=%b, en=%b, d=%b", $time, a, en, d);
+  end
+
+  initial begin
+    $dumpfile("dump.vcd");
+    $dumpvars(1, decoder_test); // Dump all signals under this module
+  end
+endmodule
+```
+Output
+```
+simtime=0, a=000, en=1, d=00000001
+simtime=5, a=001, en=1, d=00000010
+simtime=10, a=010, en=1, d=00000100
+simtime=15, a=011, en=1, d=00001000
+simtime=20, a=100, en=1, d=00010000
+simtime=25, a=101, en=1, d=00100000
+simtime=30, a=110, en=1, d=01000000
+simtime=35, a=111, en=1, d=10000000
+```
+## 3*1 mux using turnary operator
+```
+module mux41(i,s,y);
+  input [2:0]i;
+  input [1:0]s;
+  output y;
+  assign y=(s[1])?((s[0])?1'bx:i[2]):((s[1])?i[1]:i[0]);
+endmodule
+
+module mux41_test;
+  reg [2:0]i;
+  reg [1:0]s;
+  wire y;
+  mux41 dut(i,s,y);
+  initial begin
+    i=4'b000;s=2'b00;
+   
+   #2 i=4'b001;s=2'b00;
+  
+   #2 i=4'b010;s=2'b01;
+   
+   #2 i=4'b101;s=2'b10;
+  
+   #2 i=4'b100;s=2'b11;
+  end
+initial begin
+  $monitor("simtime=%0t,i=%b,s=%b,y=%b",$time,i,s,y);
+end 
+initial begin
+  $dumpfile("dump.vcd");
+  $dumpvars(0,i,s,y);
+end
+endmodule
+```
+Output
+```
+simtime=0,i=000,s=00,y=0
+simtime=2,i=001,s=00,y=1
+simtime=4,i=010,s=01,y=0
+simtime=6,i=101,s=10,y=1
+simtime=8,i=100,s=11,y=x
+```
+## 4*1 mux using turnary
+```
+module mux41(i,s,y);
+  input [3:0]i;
+  input [1:0]s;
+  output y;
+  assign y=(s[1])?((s[0])?i[3]:i[2]):((s[1])?i[1]:i[0]);
+endmodule
+
+module mux41_test;
+  reg [3:0]i;
+  reg [1:0]s;
+  wire y;
+  mux41 dut(i,s,y);
+  initial begin
+    i=4'b0000;s=2'b00;
+   
+   #2 i=4'b0001;s=2'b00;
+  
+   #2 i=4'b0010;s=2'b01;
+   
+   #2 i=4'b0101;s=2'b10;
+  
+   #2 i=4'b1100;s=2'b11;  
+  end
+initial begin
+  $monitor("simtime=%0t,i=%b,s=%b,y=%b",$time,i,s,y);
+end 
+initial begin
+  $dumpfile("dump.vcd");
+  $dumpvars(0,i,s,y);
+end
+endmodule
+```
+Output
+```
+simtime=0,i=0000,s=00,y=0
+simtime=2,i=0001,s=00,y=1
+simtime=4,i=0010,s=01,y=0
+simtime=6,i=0101,s=10,y=1
+simtime=8,i=1100,s=11,y=1
+```
+## 5*1 mux using turnary operator
+```
+module mux41(i,s,y);
+  input [4:0]i;
+  input [2:0]s;
+  output y;
+  assign y=(s[2])?((s[1])?((s[0])?1'bx:1'bx):((s[0])?1'bx:i[4])):((s[1])?((s[0])?i[3]:i[2]):((s[0])?i[1]:i[0]));
+endmodule
+
+module mux41_test;
+  reg [4:0]i;
+  reg [2:0]s;
+  wire y;
+  mux41 dut(i,s,y);
+  initial begin
+    repeat(10)begin
+   i=$random;
+    s=$random;
+//     i=5'b00000;s=3'b000;
+   
+//    #2 i=5'b11100;s=3'b100;
+  
+//    #2 i=5'b00010;s=3'b110;
+   
+//    #2 i=5'b10101;s=3'b101;
+  
+//    #2 i=5'b11100;s=3'b011;
+  #2;
+    end
+  end
+initial begin
+  $monitor("simtime=%0t,i=%b,s=%b,y=%b",$time,i,s,y);
+end 
+initial begin
+  $dumpfile("dump.vcd");
+  $dumpvars(0,i,s,y);
+end
+endmodule
+```
+Output
+```
+simtime=0,i=00100,s=001,y=0
+simtime=2,i=01001,s=011,y=1
+simtime=4,i=01101,s=101,y=x
+simtime=6,i=00101,s=010,y=1
+simtime=8,i=00001,s=101,y=x
+simtime=10,i=10110,s=101,y=x
+simtime=12,i=01101,s=100,y=0
+simtime=14,i=11001,s=110,y=x
+simtime=16,i=00101,s=010,y=1
+simtime=18,i=00101,s=111,y=x
+```
+## Fulladder using ha adder
+```
+module ha(a,b,sum,cout);
+input a,b;
+output sum,cout;
+assign sum=a^b;
+assign cout=a&b;
+endmodule
+
+
+module FA(a,b,cin,sum,cout);
+input a,b,cin;
+output sum,cout;
+wire w1,w2,w3;
+ha h1(.a(a),.b(b),.sum(w1),.cout(w2));
+ha h2(.a(w1),.b(cin),.sum(sum),.cout(w3));
+assign cout=w2|w3;
+endmodule
+module fullader_test;
+   reg a,b,cin;
+   wire sum,cout;
+  FA dut(a,b,cin,sum,cout);
+   initial begin
+   a=1'b0; b=1'b0; cin=1'b0;
+   #5 a=1'b0; b=1'b0; cin=1'b1;
+   #5 a=1'b0; b=1'b1; cin=1'b0;
+   #5 a=1'b0; b=1'b1; cin=1'b1;
+   #5 a=1'b1; b=1'b0; cin=1'b0;
+   #5 a=1'b1; b=1'b0; cin=1'b1;
+   #5 a=1'b1; b=1'b1; cin=1'b0;
+   #5 a=1'b1; b=1'b1; cin=1'b1;
+   end
+  initial begin
+   $monitor("simtime=%0t, a=%b, b=%b, cin=%b, sum=%b, cout=%b",$time,a,b,cin,sum,cout);
+   end
+  initial begin
+    $dumpfile("dump.vcd");
+    $dumpvars(0,a,b,cin,sum,cout);
+  end
+  endmodule
+```
+Output
+```
+simtime=0, a=0, b=0, cin=0, sum=0, cout=0
+simtime=5, a=0, b=0, cin=1, sum=1, cout=0
+simtime=10, a=0, b=1, cin=0, sum=1, cout=0
+simtime=15, a=0, b=1, cin=1, sum=0, cout=1
+simtime=20, a=1, b=0, cin=0, sum=1, cout=0
+simtime=25, a=1, b=0, cin=1, sum=0, cout=1
+simtime=30, a=1, b=1, cin=0, sum=0, cout=1
+simtime=35, a=1, b=1, cin=1, sum=1, cout=1
+```
+
 
