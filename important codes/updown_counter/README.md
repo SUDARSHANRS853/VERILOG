@@ -1,4 +1,19 @@
-## 3 bit UPDOWN COUNTER
+# questions
+  ## 1.3bit updown 0 1 2 3 4 5 6 7 7 6 5 4 3 2 1 0
+  ## 2.3bit updown 0 1 2 3 4 5 6 7 7 6 5 4 3 2 1 0
+  ## 3.Priority encoder
+  ## 4. Maximum value of three numbers using function
+  ## 5. Parity Checker
+  ## 6. Fibonacci series
+  ## 7.Prime number detection
+  ## 8. palindrome number
+  ## 9. priority Encoder using if else block
+  ## 10. Factorial of number using functions
+  ## 11. MUX 4*1 using 2*1
+  ## 12. 3*8 decoder using 2*4 decoder
+  ## 13. 3*1 mux using turnary operator
+  
+## 1. 3 bit UPDOWN COUNTER
 0 1 2 3 4 5 6 7 7 6 5 4 3 2 1 0
 ```
 module counter(clk,rst,up_down,count);
@@ -66,7 +81,7 @@ simtime=135,rst=0,up_down=0,count=2
 simtime=145,rst=0,up_down=0,count=1
 simtime=155,rst=0,up_down=0,count=0
 ```
-## 3bit updown counter
+## 2. 3bit updown counter
 0 1 2 3 4 5 6 7 6 5 4 3 2 1 0
 ```
 module counter (
@@ -536,7 +551,7 @@ Time=20 | d=1001 | i=11
 Time=30 | d=0011 | i=01 
 Time=40 | d=1101 | i=11
 ```
-## Factorial of number using functions
+## 10. Factorial of number using functions
 ```
 module factorial (input [31:0] N, output [63:0] 
 facto);
@@ -571,7 +586,7 @@ Output
 # 2       2
 # 4       24
 ```
-## MUX 4*1 using 2*1
+## 11. MUX 4*1 using 2*1
 ```
 module mux21(input [1:0] i, input s, output y);
   assign y = (s) ? i[1] : i[0];
@@ -626,7 +641,7 @@ Time | sel  |inputs| y
   30 | 10   | 1010 | 0
   40 | 11   | 1010 | 1
 ```
-## 3*8 decoder using 2*4 decoder
+## 12. 3*8 decoder using 2*4 decoder
 ```
 module decoder12(a,d);
   input a;
@@ -696,7 +711,7 @@ simtime=25, a=101, en=1, d=00100000
 simtime=30, a=110, en=1, d=01000000
 simtime=35, a=111, en=1, d=10000000
 ```
-## 3*1 mux using turnary operator
+## 13. 3*1 mux using turnary operator
 ```
 module mux41(i,s,y);
   input [2:0]i;
