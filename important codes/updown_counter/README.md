@@ -536,3 +536,94 @@ Time=20 | d=1001 | i=11
 Time=30 | d=0011 | i=01 
 Time=40 | d=1101 | i=11
 ```
+## Factorial of number using functions
+```
+module factorial (input [31:0] N, output [63:0] 
+facto);
+ assign facto = fact(N);
+ function automatic[63:0]  fact (input [31:0] N);
+ begin
+ if(N>1)
+ fact = fact(N-1) *N;
+ else
+ fact = 1;
+ end
+ endfunction
+ endmodule
+
+module fact_tb;
+ reg [31:0] N;
+ wire [63:0] facto;
+ factorial dut(N,facto);
+ initial begin 
+N= 3;
+ #2 N=2;
+ #3 N=4;
+ end
+ initial begin
+ $monitor(N,facto);
+ end 
+endmodule
+```
+Output
+```
+# 3       6
+# 2       2
+# 4       24
+```
+## MUX 4*1 using 2*1
+```
+module mux21(input [1:0] i, input s, output y);
+  assign y = (s) ? i[1] : i[0];
+endmodule
+
+module mux41(input [3:0] i, input [1:0] sel, output y);
+  wire w0, w1;
+
+  // First level of muxes
+  mux21 m1(.i({i[1], i[0]}), .s(sel[0]), .y(w0));
+  mux21 m2(.i({i[3], i[2]}), .s(sel[0]), .y(w1));
+
+  // Second level mux
+  mux21 m3(.i({w1, w0}), .s(sel[1]), .y(y));
+endmodule
+
+module tb_mux41;
+
+  reg [3:0] i;       // 4 data inputs
+  reg [1:0] sel;     // 2-bit select line
+  wire y;            // output from mux41
+
+  // Instantiate the mux41
+  mux41 uut (
+    .i(i),
+    .sel(sel),
+    .y(y)
+  );
+
+  initial begin
+    $display("Time | sel | inputs     | y");
+    $display("-----------------------------");
+
+    // Apply test vectors
+    i = 4'b1010; // i[3]=1, i[2]=0, i[1]=1, i[0]=0
+
+    sel = 2'b00; #10; $display("%4t | %b   | %b | %b", $time, sel, i, y);
+    sel = 2'b01; #10; $display("%4t | %b   | %b | %b", $time, sel, i, y);
+    sel = 2'b10; #10; $display("%4t | %b   | %b | %b", $time, sel, i, y);
+    sel = 2'b11; #10; $display("%4t | %b   | %b | %b", $time, sel, i, y);
+
+    $finish;
+  end
+endmodule
+```
+Output
+```
+Time | sel | inputs     | y
+-----------------------------
+  10 | 00   | 1010 | 0
+  20 | 01   | 1010 | 1
+  30 | 10   | 1010 | 0
+  40 | 11   | 1010 | 1
+```
+
