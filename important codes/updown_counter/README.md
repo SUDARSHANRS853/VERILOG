@@ -111,6 +111,8 @@ module counter (
           up_down <= 1'b0;   // switch to down after reaching 7
       end else begin
         count <= count - 1;
+        if(count==3'b001)
+          up_down<=1'b1;
       end
     end
   end
@@ -156,8 +158,8 @@ Time=105 | rst=0 | up_down=0 | count=4
 Time=115 | rst=0 | up_down=0 | count=3
 Time=125 | rst=0 | up_down=0 | count=2
 Time=135 | rst=0 | up_down=0 | count=1
-Time=145 | rst=0 | up_down=0 | count=0
-Time=155 | rst=0 | up_down=0 | count=7
+Time=145 | rst=0 | up_down=1 | count=0
+Time=155 | rst=0 | up_down=1 | count=1
 ```
 ## 3. Priority encoder
 ```
