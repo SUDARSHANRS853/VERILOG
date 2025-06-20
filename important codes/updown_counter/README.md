@@ -619,7 +619,7 @@ endmodule
 ```
 Output
 ```
-Time | sel | inputs     | y
+Time | sel  |inputs| y
 -----------------------------
   10 | 00   | 1010 | 0
   20 | 01   | 1010 | 1
