@@ -340,8 +340,8 @@ Din = 01100011, Parity = 0
 Din = 00001101, Parity = 1
 ```
 ## 6. Fibonacci series
-```module fibonacci;
-
+```
+module fibonacci;
     integer ft = 0; // First term
     integer st = 1; // Second term
     integer nt;     // Next term
