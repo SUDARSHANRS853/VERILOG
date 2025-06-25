@@ -52,5 +52,5 @@ time=5 | si=x  | rst=1 | so=0
 time=12 | si=1  | rst=0 | so=0
 time=20 | si=0  | rst=0 | so=0
 time=22 | si=1  | rst=0 | so=0
-```
 time=55 | si=1  | rst=0 | so=1
+```
