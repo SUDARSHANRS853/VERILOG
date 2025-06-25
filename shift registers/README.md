@@ -54,3 +54,58 @@ time=20 | si=0  | rst=0 | so=0
 time=22 | si=1  | rst=0 | so=0
 time=55 | si=1  | rst=0 | so=1
 ```
+## SERIAL IN PARALLEL OUT
+```
+module sipo(clk,rst,si,po);
+  input clk,rst,si;
+  output reg [3:0]po;
+  always@(posedge clk or posedge rst)begin
+    if(rst)
+      po<=4'b0000;
+    else 
+      po={po[2:0],si};
+  end
+endmodule
+module test;
+  reg clk, rst, si;
+  wire [3:0] po;
+
+  sipo dut(clk, rst, si, po);
+
+  // Clock generation: 10 time units period
+  initial begin
+    clk = 0;
+    forever #5 clk = ~clk;
+  end
+
+  // Stimulus
+  initial begin
+    rst = 1;
+    si = 0;
+    #12 rst = 0;
+
+    // Apply bits at every rising clock edge
+    si = 1; #10;
+    si = 1; #10;
+    si = 1; #10;
+    si = 1; #10
+   
+
+    $finish;
+  end
+
+  // Monitor outputs
+  initial begin
+    $monitor("time=%0t | rst=%b | si=%b | po=%b", $time, rst, si, po);
+  end
+endmodule
+```
+Output
+```
+time=0 | rst=1 | si=0 | po=0000
+time=12 | rst=0 | si=1 | po=0000
+time=15 | rst=0 | si=1 | po=0001
+time=25 | rst=0 | si=1 | po=0011
+time=35 | rst=0 | si=1 | po=0111
+time=45 | rst=0 | si=1 | po=1111
+```
