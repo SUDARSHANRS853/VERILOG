@@ -16,6 +16,26 @@ module ha(input a,b,
   assign c=ha_carry(a,b);
 endmodule
 ```
+```
+module test;
+  reg a,b;
+  wire s,c;
+  ha dut(a,b,s,c);
+  initial begin
+    a=1'b0;b=1'b0;#10;
+    a=1'b0;b=1'b1;#10;
+    a=1'b1;b=1'b0;#10;
+    a=1'b1;b=1'b1;
+  end
+  initial begin
+    $monitor("simtime=%0t,a=%b,b=%b,s=%b,c=%b",$time,a,b,s,c);
+  end
+  initial begin
+    $dumpfile("dump.vcd");
+    $dumpvars(0,test);
+  end
+endmodule
+```
 Output
 ```
 simtime=0,a=0,b=0,s=0,c=0
@@ -38,26 +58,5 @@ module ha(input a,b,
   assign temp=ha1(a,b);
   assign s=temp[0];
   assign c=temp[1];
-endmodule
-```
-Output
-```
-module test;
-  reg a,b;
-  wire s,c;
-  ha dut(a,b,s,c);
-  initial begin
-    a=1'b0;b=1'b0;#10;
-    a=1'b0;b=1'b1;#10;
-    a=1'b1;b=1'b0;#10;
-    a=1'b1;b=1'b1;
-  end
-  initial begin
-    $monitor("simtime=%0t,a=%b,b=%b,s=%b,c=%b",$time,a,b,s,c);
-  end
-  initial begin
-    $dumpfile("dump.vcd");
-    $dumpvars(0,test);
-  end
 endmodule
 ```
