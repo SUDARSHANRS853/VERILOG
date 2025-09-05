@@ -14,7 +14,6 @@ module ha(input a,b,
       
 endmodule
 ```
-Output
 ```
 module test;
   reg a,b;
